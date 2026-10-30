@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "last_verified": "2026-10-29",
+  "sources": {
+    "api_reference": "https://docs.tavily.com/api-reference/endpoint/search",
+    "best_practices": "https://docs.tavily.com/documentation/best-practices/best-practices-search"
+  },
+  "parameters": {
+    "query": {
+      "type": "string",
+      "required": true,
+      "max_length": 1500,
+      "notes": "Required. Best practices says to stay under 1500 characters and to split multi-topic asks into separate focused queries. Write it like a web search, not a prompt.",
+      "source_url": "https://docs.tavily.com/documentation/best-practices/best-practices-search",
+      "last_verified": "2026-10-29"
+    },
+    "search_depth": {
+      "type": "enum",
+      "enum": ["advanced", "basic", "fast", "ultra-fast"],
+      "default": "basic",
+      "credits": {
+        "advanced": 2,
+        "basic": 1,
+        "fast": 1,
+        "ultra-fast": 1
+      },
+      "notes": "advanced: highest relevance, more latency, 2 credits. basic: balanced, 1 credit. fast: lower latency with good relevance, 1 credit. ultra-fast: lowest latency, 1 credit, returns one NLP summary per URL instead of chunks.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "chunks_per_source": {
+      "type": "integer",
+      "min": 1,
+      "max": 3,
+      "default": 3,
+      "notes": "Maximum relevant chunks (short snippets) returned per source; controls the length of content. Available when search_depth is advanced, basic or fast.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "max_results": {
+      "type": "integer",
+      "min": 0,
+      "max": 20,
+      "default": null,
+      "required": true,
+      "default_by_source": {
+        "api_reference": 10,
+        "best_practices": 5
+      },
+      "notes": "The planner must always set this explicitly. The API reference says the default is 10 and the best-practices page says 5, so the tool never relies on the default. Too high a value can return lower-quality results.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "topic": {
+      "type": "enum",
+      "enum": ["general", "news", "finance"],
+      "default": "general",
+      "notes": "news is useful for real-time updates about politics, sports and major current events from mainstream media. general is for broader searches across a wide range of sources. finance is available on some plans only.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "time_range": {
+      "type": "enum",
+      "enum": ["day", "week", "month", "year", "d", "w", "m", "y"],
+      "default": null,
+      "notes": "Time window back from today, matched against publish or last-updated date. By default, results with no detectable published date are kept; set filter_by_published_date to true to remove them.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "start_date": {
+      "type": "date",
+      "default": null,
+      "notes": "Return results after this date (YYYY-MM-DD), by publish or last-updated date. By default, results with no detectable published date are kept; set filter_by_published_date to true to remove them.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "end_date": {
+      "type": "date",
+      "default": null,
+      "notes": "Return results before this date (YYYY-MM-DD), by publish or last-updated date. By default, results with no detectable published date are kept; set filter_by_published_date to true to remove them.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "include_published_date": {
+      "type": "boolean",
+      "default": false,
+      "notes": "Beta. Adds a published_date field to each result (Tavily's best estimate; null when undetectable). Turned on automatically when topic is news.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "filter_by_published_date": {
+      "type": "boolean",
+      "default": false,
+      "notes": "Removes results outside the time_range / start_date / end_date window, and also removes results with no detectable date. Also turns on include_published_date.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "include_domains": {
+      "type": "string_list",
+      "max_items": 300,
+      "default": null,
+      "notes": "Domains to include, maximum 300. Wildcards such as .com are shown in the best-practices examples. A hard filter unless include_domains_mode is prefer, so listing a few retailers excludes every other site.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "include_domains_mode": {
+      "type": "enum",
+      "enum": ["restrict", "prefer"],
+      "default": "restrict",
+      "notes": "restrict limits results to include_domains. prefer also searches the rest of the web, so other sites can still appear.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "exclude_domains": {
+      "type": "string_list",
+      "max_items": 150,
+      "default": null,
+      "notes": "Domains to exclude, maximum 150.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "country": {
+      "type": "enum",
+      "enum": ["afghanistan", "albania", "algeria", "andorra", "angola", "argentina", "armenia", "australia", "austria", "azerbaijan", "bahamas", "bahrain", "bangladesh", "barbados", "belarus", "belgium", "belize", "benin", "bhutan", "bolivia", "bosnia and herzegovina", "botswana", "brazil", "brunei", "bulgaria", "burkina faso", "burundi", "cambodia", "cameroon", "canada", "cape verde", "central african republic", "chad", "chile", "china", "colombia", "comoros", "congo", "costa rica", "croatia", "cuba", "cyprus", "czech republic", "denmark", "djibouti", "dominican republic", "ecuador", "egypt", "el salvador", "equatorial guinea", "eritrea", "estonia", "ethiopia", "fiji", "finland", "france", "gabon", "gambia", "georgia", "germany", "ghana", "greece", "guatemala", "guinea", "haiti", "honduras", "hungary", "iceland", "india", "indonesia", "iran", "iraq", "ireland", "israel", "italy", "jamaica", "japan", "jordan", "kazakhstan", "kenya", "kuwait", "kyrgyzstan", "latvia", "lebanon", "lesotho", "liberia", "libya", "liechtenstein", "lithuania", "luxembourg", "madagascar", "malawi", "malaysia", "maldives", "mali", "malta", "mauritania", "mauritius", "mexico", "moldova", "monaco", "mongolia", "montenegro", "morocco", "mozambique", "myanmar", "namibia", "nepal", "netherlands", "new zealand", "nicaragua", "niger", "nigeria", "north korea", "north macedonia", "norway", "oman", "pakistan", "panama", "papua new guinea", "paraguay", "peru", "philippines", "poland", "portugal", "qatar", "romania", "russia", "rwanda", "saudi arabia", "senegal", "serbia", "singapore", "slovakia", "slovenia", "somalia", "south africa", "south korea", "south sudan", "spain", "sri lanka", "sudan", "sweden", "switzerland", "syria", "taiwan", "tajikistan", "tanzania", "thailand", "togo", "trinidad and tobago", "tunisia", "turkey", "turkmenistan", "uganda", "ukraine", "united arab emirates", "united kingdom", "united states", "uruguay", "uzbekistan", "venezuela", "vietnam", "yemen", "zambia", "zimbabwe"],
+      "default": null,
+      "notes": "Boosts results from one country (a boost, not a filter). Available only when topic is general. Country-level only: there is no city or region targeting, so put a city in the query text.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "language": {
+      "type": "string",
+      "default": null,
+      "notes": "Boosts results in a language. Accepts an ISO 639-1 code (en, fr, zh-cn) or an English name (english). Write the query in the same language.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "filter_by_language": {
+      "type": "boolean",
+      "default": false,
+      "notes": "Strictly filters out results that do not match language instead of only boosting them, so it can return few or no results. Requires language.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "include_raw_content": {
+      "type": "boolean_or_enum",
+      "enum": ["markdown", "text"],
+      "default": false,
+      "notes": "Full cleaned page content per result. true or markdown gives markdown; text gives plain text and may add latency. For deep extraction the best-practices page suggests Search first, then the Extract API.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "include_answer": {
+      "type": "boolean_or_enum",
+      "enum": ["basic", "advanced"],
+      "default": false,
+      "notes": "LLM-written answer to the query. true or basic is quick; advanced is more detailed. Only useful if you do not bring your own model.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "exact_match": {
+      "type": "boolean",
+      "default": false,
+      "notes": "Only returns results containing the exact quoted phrase(s) in the query, bypassing synonyms. Wrap the phrase in quotes inside query.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "max_age_hours": {
+      "type": "integer",
+      "min": -1,
+      "max": 720,
+      "default": null,
+      "notes": "Maximum age of Tavily's cached copy of each result. Unset: cached copies, fetched live as needed. 1 to 720: only cached copies fetched within that many hours. 0: always fetch live. -1: never fetch live. Lower values cost no extra credits but live fetching adds latency, and results that are too old and cannot be fetched live are left out, so you can get fewer than max_results.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    },
+    "include_usage": {
+      "type": "boolean",
+      "default": false,
+      "planner_choosable": false,
+      "notes": "Returns credit usage in the response. The backend sets this for Phase 2; the planner must not choose it.",
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search",
+      "last_verified": "2026-10-29"
+    }
+  },
+  "not_used_in_v1": {
+    "auto_parameters": "The planner replaces it.",
+    "include_images": "Out of scope for v1.",
+    "include_image_descriptions": "Out of scope for v1.",
+    "include_favicon": "Out of scope for v1.",
+    "safe_search": "Out of scope for v1."
+  },
+  "rules": [
+    {
+      "id": "domains_mode_needs_domains",
+      "text": "include_domains_mode without include_domains returns a 400 error.",
+      "documented": true,
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search"
+    },
+    {
+      "id": "filter_by_language_needs_language",
+      "text": "filter_by_language requires language and returns a 400 error otherwise.",
+      "documented": true,
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search"
+    },
+    {
+      "id": "country_general_only",
+      "text": "country is available only when topic is general.",
+      "documented": true,
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search"
+    },
+    {
+      "id": "chunks_need_depth",
+      "text": "chunks_per_source is available only when search_depth is advanced, basic or fast (so not ultra-fast).",
+      "documented": true,
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search"
+    },
+    {
+      "id": "date_format",
+      "text": "start_date and end_date must be YYYY-MM-DD.",
+      "documented": true,
+      "source_url": "https://docs.tavily.com/api-reference/endpoint/search"
+    },
+    {
+      "id": "max_results_explicit",
+      "text": "max_results must always be set by the planner, because the documented default differs between pages.",
+      "documented": false,
+      "source_url": null
+    }
+  ]
+}

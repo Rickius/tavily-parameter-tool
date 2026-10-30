@@ -1,0 +1,57 @@
+[
+  {
+    "label": "Grocery deals (this week)",
+    "task": "find this week's grocery deals",
+    "exercises": "time_range, topic, include_domains"
+  },
+  {
+    "label": "Breaking news",
+    "task": "what did the Federal Reserve decide at its most recent rate meeting, and how did markets react today",
+    "exercises": "topic: news, time_range"
+  },
+  {
+    "label": "Company financials",
+    "task": "latest quarterly earnings and guidance for Nvidia",
+    "exercises": "topic: finance (plan-limited), time_range"
+  },
+  {
+    "label": "Local search (a Tavily limit)",
+    "task": "best ramen restaurants open now in Austin, Texas",
+    "exercises": "the no city-level targeting warning, country"
+  },
+  {
+    "label": "Restrict to one site",
+    "task": "find recent research papers on retrieval-augmented generation on arxiv.org",
+    "exercises": "include_domains, include_domains_mode"
+  },
+  {
+    "label": "Exclude sites",
+    "task": "reviews of the Framework Laptop 16, but not from reddit or youtube",
+    "exercises": "exclude_domains"
+  },
+  {
+    "label": "Fixed date range",
+    "task": "articles published between January and March 2026 about EU AI Act enforcement",
+    "exercises": "start_date, end_date, filter_by_published_date"
+  },
+  {
+    "label": "Exact phrase",
+    "task": "find tutorials that contain the exact phrase \"zero-shot prompting\"",
+    "exercises": "exact_match"
+  },
+  {
+    "label": "Non-English results",
+    "task": "German-language news about the Bundesliga this weekend",
+    "exercises": "language, filter_by_language, topic: news"
+  },
+  {
+    "label": "Several topics in one ask",
+    "task": "compare GPU instance pricing on AWS, Azure and Google Cloud, and summarize each provider's most recent major outage",
+    "exercises": "query splitting guidance, max_results"
+  },
+  {
+    "label": "Full page text",
+    "task": "get the full text of the Python 3.14 release notes",
+    "exercises": "include_raw_content, search then extract"
+  }
+]

@@ -1,0 +1,19 @@
+# Secrets: never commit real keys. Only .env.example is tracked.
+.env
+.env.*
+!.env.example
+
+# web/config.js is overwritten at Amplify build time with the real keys. It is committed with EMPTY keys:
+# never commit it after a local build (web/tests/config.test.js fails if a key is in it).
+# Any local file named config.local.js is ignored as a safety net.
+web/config.local.js
+**/config.local.js
+
+# Logs and local output
+*.log
+*.pid
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/

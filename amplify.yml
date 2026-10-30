@@ -1,0 +1,27 @@
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        # NEBIUS_API_KEY (required) and TAVILY_API_KEY (optional) come from the Amplify console
+        # (App settings > Environment variables). They are written into web/config.js, so anyone who can
+        # load the deployed page can read them: only deploy this behind Amplify's branch password.
+        - |
+          if [ -z "$NEBIUS_API_KEY" ]; then
+            echo "NEBIUS_API_KEY is not set. Add it under App settings > Environment variables." >&2
+            exit 1
+          fi
+          for name in NEBIUS_API_KEY TAVILY_API_KEY; do
+            value=$(printenv "$name" || true)
+            if [ -n "$value" ] && ! printf '%s' "$value" | grep -Eq '^[A-Za-z0-9_.-]+$'; then
+              echo "$name contains characters other than letters, digits, '.', '_' and '-'. Check the value you pasted." >&2
+              exit 1
+            fi
+          done
+        - |
+          printf 'window.APP_CONFIG = { nebiusApiKey: "%s", tavilyApiKey: "%s" };\n' "$NEBIUS_API_KEY" "$TAVILY_API_KEY" > web/config.js
+        - rm -rf web/tests web/package.json
+  artifacts:
+    baseDirectory: web
+    files:
+      - '**/*'

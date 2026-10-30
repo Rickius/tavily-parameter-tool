@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Tavily Query-to-Parameters Explainer</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="top">
+  <svg class="wm" viewBox="0 0 273 105" role="img" aria-label="Tavily" xmlns="http://www.w3.org/2000/svg"><path d="M218.23 104.665V92.5995H224.13C229.35 92.5995 231.733 92.7133 234.342 86.225L235.023 84.5175L211.648 23.5048H228.782L242.626 67.6707L256.81 23.5048H272.695L250.342 82.9239C243.193 101.934 240.016 104.665 224.811 104.665H218.23Z"/><path d="M206.914 84.7453H191.256V2.21869H206.914V84.7453Z"/><path d="M179.486 23.5048V84.7452H163.827V23.5048H179.486Z"/><path d="M129.199 68.809L143.496 23.5048H159.041L137.142 84.7452H120.688L98.4482 23.5048H114.901L129.199 68.809Z"/><path d="M64.2717 86.2251C52.5843 86.2251 42.2585 79.3953 42.2585 68.24C42.2585 53.7836 58.4848 49.4581 82.4269 46.7261V45.7017C82.4269 36.2538 77.3208 32.9527 70.9665 32.9527C64.9525 32.9527 59.9599 36.14 59.6195 42.8559H44.9818C46.1165 30.79 56.1019 21.9113 71.7607 21.9113C86.2849 21.9113 98.0858 28.1719 98.0858 48.8889C98.0858 50.824 97.8588 58.9059 97.8588 64.4836C97.8588 74.1591 98.5397 79.6229 99.6744 84.7453H85.2637C84.8098 82.8102 84.4694 80.0783 84.2424 77.1187C79.9306 83.4932 73.4628 86.2251 64.2717 86.2251ZM82.8808 56.7432C65.4064 58.5644 58.3713 60.6134 58.3713 67.4432C58.3713 71.8825 61.8889 75.5251 68.924 75.5251C78.6824 75.5251 82.8808 70.1751 82.8808 61.2964V56.7432Z"/><path d="M8.62372 6.88571H24.2826V23.5048H36.9912V34.3187H24.2826V65.9633C24.2826 72.224 26.4385 73.4761 31.9985 73.4761H36.7643V84.7453H25.3038C11.347 84.7453 8.62372 80.4197 8.62372 68.2399V34.3187H0V23.5048H8.62372V6.88571Z"/><path d="M171.657 0C166.894 0 163.033 3.8868 163.033 8.64936C163.033 13.4119 166.894 17.2987 171.657 17.2987C176.419 17.2987 180.28 13.4119 180.28 8.64936C180.28 3.8868 176.419 0 171.657 0Z"/></svg>
+  <span class="sep"></span>
+  <span class="name">Query-to-Parameters Explainer</span>
+  <nav class="tabs" role="tablist" aria-label="View">
+    <button class="tab" role="tab" data-tab="p1" aria-selected="true">Parameters</button>
+    <button class="tab" role="tab" data-tab="p2" aria-selected="false">Compare models</button>
+  </nav>
+  <span class="sp"></span>
+  <button class="icon-btn" id="theme" type="button" aria-label="Toggle light or dark theme"></button>
+</header>
+
+<div class="notice notice-err banner" id="modelBanner" role="alert" hidden></div>
+
+<div data-view="p1">
+  <div class="grid">
+    <aside class="rail" aria-label="Task and alternatives">
+      <section class="card">
+        <label class="lbl" for="taskInput">Task</label>
+        <select class="examples" id="examples" aria-label="Example tasks" hidden>
+          <option value="">Pick an example, or type your own below</option>
+        </select>
+        <p class="ex-note" id="exNote" hidden></p>
+        <div class="taskbox" id="taskbox">
+          <div class="task-view" id="taskView" tabindex="0" role="textbox" aria-label="Task, click to edit"></div>
+          <textarea class="task-input" id="taskInput" rows="2" maxlength="2000">find this week's grocery deals</textarea>
+        </div>
+        <button class="btn btn-primary" id="explain" type="button"><span class="spin"></span>Explain parameters</button>
+        <label class="ens" id="ensRow"><input type="checkbox" id="ensemble" disabled><span>Use planner ensemble</span></label>
+        <p class="ens-note" id="ensNote"></p>
+        <p class="task-err" id="taskErr" role="alert" hidden></p>
+        <p class="hint" id="stopNote" role="status" hidden></p>
+        <p class="hint" id="compareOff" hidden>Compare models is switched off on this server.</p>
+        <p class="hint">Hover a highlighted phrase to see which parameters it set. Click the text to edit it.</p>
+      </section>
+      <section class="card keys" id="keysCard" hidden>
+        <span class="lbl">API keys</span>
+        <div class="keyrow" id="nebiusKeyRow">
+          <label class="keylbl" for="nebiusKey">Token Factory key (required)</label>
+          <input type="password" id="nebiusKey" autocomplete="off" spellcheck="false" maxlength="400" placeholder="Paste your key">
+          <p class="ens-note" id="nebiusKeyStatus"></p>
+        </div>
+        <div class="keyrow" id="tavilyKeyRow">
+          <label class="keylbl" for="tavilyKey">Tavily key (only for Compare models)</label>
+          <input type="password" id="tavilyKey" autocomplete="off" spellcheck="false" maxlength="400" placeholder="Paste your key">
+          <p class="ens-note" id="tavilyKeyStatus"></p>
+        </div>
+        <p class="hint">Keys stay in this browser tab and are sent only to Token Factory and Tavily.</p>
+        <button class="btn btn-sm" id="clearKeys" type="button">Clear keys</button>
+      </section>
+      <section class="card">
+        <span class="lbl">Alternatives</span>
+        <div class="alts" id="alts" role="group" aria-label="Configuration"></div>
+        <p class="tradeoff" id="tradeoff">Run the planner to see alternatives.</p>
+      </section>
+      <section class="card status" id="runDetails">
+        <span class="lbl">Run details</span>
+        <span>Nothing run yet.</span>
+      </section>
+    </aside>
+
+    <main class="results-scope">
+      <div class="notice" id="empty">
+        <h2>No result yet</h2>
+        <p>Press Explain parameters to see which Tavily Search parameters this task needs, with a reason and a source tag for each. No Tavily search runs and no Tavily credits are spent.</p>
+      </div>
+      <div class="notice" id="loading" aria-busy="true" hidden>
+        <h2 id="loadingTitle">Asking the planner</h2>
+        <p id="loadingText">The planner is a reasoning model and can take a couple of minutes. A second call happens only if the first answer fails validation.</p>
+        <div class="live-top">
+          <p class="elapsed">Elapsed: <span id="elapsed">0s</span></p>
+          <button class="btn btn-sm" id="stopPlan" type="button">Stop</button>
+        </div>
+        <p class="sr-only" id="loadingAnnounce" role="status"></p>
+        <div class="live" id="live">
+          <span class="lbl">Live output</span>
+          <p class="live-note">What the models are writing right now. Nothing here is final until it passes the spec check.</p>
+          <div class="live-panes" id="livePanes"></div>
+        </div>
+      </div>
+      <div class="notice notice-err" id="error" role="alert" hidden></div>
+
+      <div class="results" id="results" hidden>
+        <section class="warns" id="warnsBox" aria-label="Documented limits">
+          <div class="warns-head"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.8 14.5 13H1.5z"/><path d="M8 6.5v3M8 11.3v.1"/></svg><span id="wcount"></span></div>
+          <ul id="warns"></ul>
+        </section>
+        <div class="rows-head"><h2>Parameters to set<span class="count" id="pcount"></span></h2></div>
+        <div class="legend" aria-label="Tag legend">
+          <span><span class="tag tag-doc">Documented</span>stated in a Tavily page</span>
+          <span><span class="tag tag-judg">Judgment call <i>[Inference]</i></span>planner's recommendation</span>
+          <span><span class="tag tag-def">Default</span>left unset on purpose</span>
+        </div>
+        <div id="rows"></div>
+        <div id="defGroup">
+          <button class="defbtn" id="defbtn" type="button" aria-expanded="false" aria-controls="defwrap"></button>
+          <div class="collapse" id="defwrap"><div class="collapse-in"><div class="defs" id="defs"></div></div></div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="preview" aria-label="Request preview">
+      <div class="code">
+        <div class="code-head">
+          <div class="code-tabs" role="tablist">
+            <button class="code-tab" role="tab" data-mode="json" aria-selected="true">JSON body</button>
+            <button class="code-tab" role="tab" data-mode="py" aria-selected="false">Python</button>
+          </div>
+          <button class="btn btn-sm" id="copy" type="button"></button>
+        </div>
+        <div class="code-body" id="code"><p class="code-empty">The request appears here after you run the planner.</p></div>
+        <p class="code-note">Hover a line to find its row. Phase 1 runs no Tavily search and spends no credits.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div data-view="p2" hidden>
+  <div class="p2wrap">
+    <section class="p2-top">
+      <div>
+        <span class="p2-lbl">Original query, sent unchanged to both models</span>
+        <p class="p2-q" id="p2Query"></p>
+      </div>
+      <div class="p2-caps">
+        <span>Caps per model: <b id="capTurns">6</b> turns, <b id="capSearches">4</b> Tavily searches</span>
+        <button type="button" class="btn" id="p2Stop" hidden>Stop</button>
+        <button type="button" class="btn btn-primary" id="p2Run">Run both models</button>
+      </div>
+      <p class="p2-foot">This view calls Tavily and spends credits, so it asks for confirmation first. Edit the query on the Parameters tab.</p>
+    </section>
+    <div class="notice notice-err" id="p2Error" role="alert" hidden></div>
+    <div class="p2-cols">
+      <section class="p2-col" id="col-small" aria-label="Small model"></section>
+      <section class="p2-col" id="col-large" aria-label="Large model"></section>
+    </div>
+    <p class="p2-foot">The tool reports what happened and does not rank the models. A single run varies, so use Run again to see the spread.</p>
+  </div>
+  <dialog class="dlg" id="p2Dialog" aria-labelledby="p2DialogTitle">
+    <form method="dialog">
+      <h3 id="p2DialogTitle">Run the original query</h3>
+      <p class="muted" id="p2DialogLead"></p>
+      <div class="fields">
+        <label>Max model turns<input type="number" id="inTurns" min="1" value="6"></label>
+        <label>Max Tavily searches<input type="number" id="inSearches" min="1" value="4"></label>
+      </div>
+      <div class="impl" id="p2Impl"></div>
+      <div class="acts">
+        <button type="button" class="btn" id="p2Cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="p2Go">Run</button>
+      </div>
+    </form>
+  </dialog>
+</div>
+
+<script src="config.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
