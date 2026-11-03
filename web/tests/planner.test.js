@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { buildSystemPrompt, parseJson, planTask } from '../core/planner.js';
 import { badBody, clone, fakeFetch, groceryPlan, hang, httpError, makeSettings, networkError, planCtx, spec, TASK } from './support.js';
 
-const MODEL = 'moonshotai/Kimi-K3';
+const MODEL = 'zai-org/GLM-5.3';
 const json = (value) => JSON.stringify(value);
 
 async function planError(promise) {

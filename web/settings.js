@@ -3,17 +3,17 @@
 
 export const settings = {
   models: {
-    planner: 'moonshotai/Kimi-K3',
+    planner: 'zai-org/GLM-5.3',
     planner2: 'deepseek-ai/DeepSeek-V4-Pro-0813', // second planner for the optional ensemble; set to '' to disable it
     aggregator: 'zai-org/GLM-5.2', // merges the two plans; set to '' to disable the ensemble
     small: 'Qwen/Qwen3-30B-A3B-Instruct-2507', // default Compare models; each must be in phase2Allowlist
-    large: 'moonshotai/Kimi-K3',
+    large: 'zai-org/GLM-5.3',
   },
 
   // The Compare tab offers only these. Token Factory documents no "supports tool calls" flag,
   // so the list is curated by hand. Add an entry (id and size: 'small' or 'large') to offer another model.
   phase2Allowlist: [
-    { id: 'moonshotai/Kimi-K3', size: 'large' },
+    { id: 'zai-org/GLM-5.3', size: 'large' },
     { id: 'Qwen/Qwen3-30B-A3B-Instruct-2507', size: 'small' },
   ],
 

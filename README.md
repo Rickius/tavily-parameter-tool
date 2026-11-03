@@ -98,10 +98,10 @@ Edit `web/settings.js`. No keys go in that file.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `models.planner` | `moonshotai/Kimi-K3` | The planner. Any model that follows the JSON instructions works. |
+| `models.planner` | `zai-org/GLM-5.3` | The planner. Any model that follows the JSON instructions works. |
 | `models.planner2` | `deepseek-ai/DeepSeek-V4-Pro-0813` | Second planner for the ensemble. Set to `''` to turn the ensemble off. |
 | `models.aggregator` | `zai-org/GLM-5.2` | Merges the two plans. A different model family from the planners works best. |
-| `models.small` / `models.large` | `Qwen/Qwen3-30B-A3B-Instruct-2507` / `moonshotai/Kimi-K3` | Default Compare models. Each must be in `phase2Allowlist`. |
+| `models.small` / `models.large` | `Qwen/Qwen3-30B-A3B-Instruct-2507` / `zai-org/GLM-5.3` | Default Compare models. Each must be in `phase2Allowlist`. |
 | `phase2Allowlist` | those two | The models the Compare tab offers. Add `{ id, size }` entries (`small` or `large`); each should support function calling. |
 | `ensembleDefault` | `false` | Whether the ensemble checkbox starts checked. |
 | `compareEnabled` | `true` | `false` hides Compare, the part that spends Tavily credits. |
@@ -128,7 +128,7 @@ Models are set in `web/settings.js`, not in `.env`.
 
    ```js
    phase2Allowlist: [
-     { id: 'moonshotai/Kimi-K3', size: 'large' },
+     { id: 'zai-org/GLM-5.3', size: 'large' },
      { id: 'Qwen/Qwen3-30B-A3B-Instruct-2507', size: 'small' },
      { id: 'zai-org/GLM-5.3-Flash', size: 'small' }, // added
    ],
