@@ -183,3 +183,7 @@ docs/AMPLIFY_AGENT_RUNBOOK.md   The same, written for an automated agent
 Run the tests with `cd web && node --test` (offline, no keys, needs Node 18 or newer). `web/tests/parity.test.js` checks the code against a frozen record of what the original Python version returned, so behavior changes show up as failures.
 
 To change the example tasks, edit `web/examples.json`. To change what the tool knows about Tavily, edit `web/spec.json`: the planner prompt, the validator and the Compare tool schema all read from it.
+
+## License and contributing
+
+[MIT](LICENSE). Contributions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
